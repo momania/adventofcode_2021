@@ -1,3 +1,4 @@
+import scala.collection.immutable.Iterable
 import scala.io.Source
 
 object Day01 extends App {
@@ -10,7 +11,7 @@ object Day01 extends App {
   println(s"Increases 2: ${computeIncreases(sums)}")
 
   def computeIncreases(numbers: List[Int])= {
-    numbers.sliding(2).foldLeft(0){case (s, h :: t :: Nil) => s + (if (t > h) 1 else 0)}
+    numbers.sliding(2).count{case (h :: t :: Nil) => t > h}
   }
 }
 
