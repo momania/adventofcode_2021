@@ -3,26 +3,24 @@ import scala.io.Source
 
 object Day06 extends App {
 
-  val source = Source.fromFile("input/day06.input.test")
-  val initialFish = source.getLines().flatMap(_.split(',').map(_.toInt)).toList
+  val source = Source.fromFile("input/day06.input")
+  val input = source.getLines().flatMap(_.split(',').map(_.toInt)).toList
 
-  val fish = breadFish(initialFish, 80)
-  println(s"Total fish ${fish.length}")
+  val initialFish = for(i <- 0 to 8) yield input.count(_ == i).longValue
+  println(s"Initial fish: $initialFish")
+  val fish = breadFish(initialFish.toList, 256)
+  println(s"Final fish: $fish")
+  println(s"Total fish ${fish.sum}")
 
-  @tailrec def breadFish(fish: List[Int], steps: Int): List[Int] = {
-    println(s"Step: $steps")
-    val newFish = List.fill(fish.count(_ == 0))(8)
-    val bread = fish.collect {
-      case 0 => 6
-      case x => x - 1
-    }
-    val totalFish = bread ++ newFish
+  @tailrec def breadFish(fish: List[Long], steps: Long): List[Long] = {
+    val newFish = fish.head
+    val rotated = fish.tail :+ newFish
+    val bread = rotated.updated(6, rotated(6) + newFish)
     if (steps > 1) {
-      breadFish(totalFish, steps - 1)
+      breadFish(bread, steps - 1)
     } else {
-      totalFish
+      bread
     }
-
   }
 }
 
